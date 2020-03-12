@@ -80,7 +80,7 @@ end
 
 -- registers a new file extension to use the template with
 local function register(extension)
-	api.nvim_command("autocmd Templar BufNewFile %s require'templar'.source()")
+	api.nvim_command(string.format("autocmd Templar BufNewFile %s lua require'templar'.source()", extension))
 end
 
 return {
