@@ -66,7 +66,6 @@ local function search_template()
 		{ table.concat(api.nvim_list_runtime_paths(), ','), 'templates/template.' .. extension, false, true }
 	)
 
-	print(vim.inspect(files))
 	return files[1]
 end
 
