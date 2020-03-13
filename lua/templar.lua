@@ -42,7 +42,7 @@ local function parse_template(file)
 			_, output = parse_template(path)
 
 			print(vim.inspect(evaluated))
-			evaluated = vim.fn.extend(evaluated, output)
+			vim.list_extend(evaluated, output)
 			print(vim.inspect(evaluated))
 		else
 			evaluated[index] = line:gsub('%%{.+}', parse_field(tag, values))
