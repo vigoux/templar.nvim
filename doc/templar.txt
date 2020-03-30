@@ -1,0 +1,82 @@
+*templar.txt*	For Neovim 5.0	Last Change: 2020 mar 30
+
+*Templar.nvim*
+A template manager with field expansion.
+
+Hit |gO| to see the table of contents.
+
+
+Introduction~
+							       *templar-intro*
+
+Templar.nvim is only a enhanced version of |skeleton|, relying on the
+|BufNewFile| autocommand.
+
+Here is how it basically works:
+1. |BufNewFile| autocmd is triggered for a new file
+2. Search for the corresponding template in `templates/*` runtime files.
+3. Expand the fields specified in the previously found template.
+4. Set the lines of the file to the expanded template content.
+
+Note For now only extensions are used for template file, but in the near
+     future it will be possible to match any file.
+
+Goals~
+    1. Be easy to use
+    2. Get out of the way as soon as the work is done
+    3. Allow for powerfull field expansion.
+
+Non-goals~
+    1. User interaction during expansion (see goal 2)
+
+============================================================================
+1. Registering template files
+							    *templar-register*
+
+Registering a template is adding an autocmd to Nvim, which triggers templar
+when a new file of the given extension is opened.
+
+							    *templar.register*
+Use `templar.register(regex)` lua function to register a new template.
+
+For this, here is a lua example snippet >
+    lua << EOF
+    local templar = require'templar'
+    templar.register('*.h')
+    templar.register('*.vim')
+    EOF
+<
+This registers templates for c headers and vim files.
+When opening a new `.h` file, `templar` wil search for `templates/template.h`
+files in your runtime files.
+
+============================================================================
+2. Writing template files
+							     *templar-writing*
+
+Lets go throught an example to see how to write a templar template file.
+Consider the examples lua snippet above, and espacially the c header file.
+Here is an example template file for c header >
+    #ifndef %{'__' . substitute(toupper(expand('%:t')), '\(\.\|-\)', '_', 0) . '__'}
+    #define %{0}
+
+    %{CURSOR}
+
+    #endif /* %{0} */
+<
+The syntax is pretty basic, we call every `%{*}` part a field.
+As we see we have 3 types of fields here :
+    %{VimL Expression}	    This fields will be evaluated to the Viml expression
+			    they contain. The value will then be stored in a 0
+			    based array so that you can recall their values.
+
+    %{N}		    With these fields you can recall a previously
+			    evaluated field. In our example we recall the
+			    first (0-based indexing) field value.
+
+    %{CURSOR}		    This is where the cursor will be after template
+			    expansion.
+
+Note: More special fields might come, like a special `%{INCLUDE}`
+
+vim:tw=78:ts=8:noet:ft=help:norl:
