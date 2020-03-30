@@ -76,6 +76,7 @@ Here is an example template file for c header >
 
     #endif /* %{0} */
 <
+							      *templar-fields*
 The syntax is pretty basic, we call every `%{*}` part a field.
 As we see we have 3 types of fields here :
 
