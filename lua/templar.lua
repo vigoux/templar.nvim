@@ -62,9 +62,7 @@ end
 local function search_template()
 	local extension = vim.fn.expand('%:e')
 
-	local files = api.nvim_call_function('globpath',
-		{ table.concat(api.nvim_list_runtime_paths(), ','), 'templates/template.' .. extension, false, true }
-	)
+    local files = api.nvim_get_runtime_file("templates/template." .. extension, false)
 
 	return files[1]
 end
