@@ -1,3 +1,4 @@
+[![asciicast](https://asciinema.org/a/EJso0aznW4JplSdciiizC0snJ.svg)](https://asciinema.org/a/EJso0aznW4JplSdciiizC0snJ)
 Templar.nvim
 ============
 
