@@ -18,9 +18,6 @@ Here is how it basically works:
 3. Expand the fields specified in the previously found template.
 4. Set the lines of the file to the expanded template content.
 
-Note For now only extensions are used for template file, but in the near
-     future it will be possible to match any file.
-
 Goals~
     1. Be easy to use
     2. Get out of the way as soon as the work is done
@@ -44,11 +41,14 @@ For this, here is a lua example snippet >
     local templar = require'templar'
     templar.register('*.h')
     templar.register('*.vim')
+    templar.register('doc/*.txt')
     EOF
 <
-This registers templates for c headers and vim files.
+This registers templates for c headers, vim files and help files.
 When opening a new `.h` file, `templar` wil search for `templates/template.h`
 files in your runtime files.
+In the examples the `doc/*.txt` entry will search in
+`templates/doc/template.txt` in your runtime files.
 
 ============================================================================
 2. Writing template files
@@ -57,6 +57,7 @@ files in your runtime files.
 Lets go throught an example to see how to write a templar template file.
 Consider the examples lua snippet above, and espacially the c header file.
 Here is an example template file for c header >
+
     #ifndef %{'__' . substitute(toupper(expand('%:t')), '\(\.\|-\)', '_', 0) . '__'}
     #define %{0}
 
@@ -66,16 +67,20 @@ Here is an example template file for c header >
 <
 The syntax is pretty basic, we call every `%{*}` part a field.
 As we see we have 3 types of fields here :
-    %{VimL Expression}	    This fields will be evaluated to the Viml expression
-			    they contain. The value will then be stored in a 0
-			    based array so that you can recall their values.
 
-    %{N}		    With these fields you can recall a previously
-			    evaluated field. In our example we recall the
-			    first (0-based indexing) field value.
+    `%{VimL}`		This fields will be evaluated to the Viml expression
+			they contain. The value will then be stored in a 0
+			based array so that you can recall their values.
+			Note: In VimL fields, you can see that `expand('%')`
+			will return the file which triggered `BufNewFile`
+			autocommand.
 
-    %{CURSOR}		    This is where the cursor will be after template
-			    expansion.
+    `%{N}`		With these fields you can recall a previously
+			evaluated field. In our example we recall the
+			first (0-based indexing) field value.
+
+    `%{CURSOR}`		This is where the cursor will be after template
+			expansion.
 
 Note: More special fields might come, like a special `%{INCLUDE}`
 

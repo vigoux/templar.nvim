@@ -1,5 +1,6 @@
-" Last Change: 2020 mar 12
+" Last Change: 2020 mar 30
 " Author: Thomas Vigouroux
+
 if exists('g:loaded_templar')
 	finish
 else
@@ -7,7 +8,8 @@ else
 endif
 
 augroup Templar
+    autocmd BufNewFile * lua require'templar'.source()
 augroup END
 
 
-command! -nargs=* TemplarRegister lua require'templar'.register(<f-args>)
+command! -nargs=1 TemplarRegister lua require'templar'.register(<f-args>)

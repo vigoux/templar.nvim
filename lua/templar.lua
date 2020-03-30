@@ -1,6 +1,7 @@
 -- in templar.lua
 
 local api = vim.api
+local templates = {}
 
 local function parse_field(field, values)
 	if string.match(field, '^%d+$') then
@@ -60,14 +61,21 @@ end
 
 -- searches the correct template for the current file
 local function search_template()
-	local extension = vim.fn.expand('%:e')
+	local curfile = vim.fn.expand('%')
 
-    local files = api.nvim_get_runtime_file("templates/template." .. extension, false)
+    for fname, temppath in pairs(templates) do
+        print(fname, temppath)
+        if curfile:find(fname) ~= nil then
+            local files = api.nvim_get_runtime_file(temppath, false)
+            return files[1]
+        end
+    end
 
-	return files[1]
+	return nil
 end
 
 local function source()
+    print("Test")
 	local template_file = search_template()
 
 	if template_file then
@@ -76,8 +84,12 @@ local function source()
 end
 
 -- registers a new file extension to use the template with
-local function register(extension)
-	api.nvim_command(string.format("autocmd Templar BufNewFile %s lua require'templar'.source()", extension))
+local function register(filename)
+    -- Generate template path from filename
+    -- This is basically replacing each * in the filename by template
+    local temppath = 'templates/' .. string.gsub(filename, "%*", "template")
+    local fname_regex = string.gsub(filename, "%*", ".*")
+    templates[fname_regex] = temppath
 end
 
 return {
