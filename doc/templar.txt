@@ -37,18 +37,29 @@ when a new file of the given extension is opened.
 Use `templar.register(regex)` lua function to register a new template.
 
 For this, here is a lua example snippet >
-    lua << EOF
+
     local templar = require'templar'
     templar.register('*.h')
     templar.register('*.vim')
     templar.register('doc/*.txt')
-    EOF
-<
+
 This registers templates for c headers, vim files and help files.
 When opening a new `.h` file, `templar` wil search for `templates/template.h`
 files in your runtime files.
 In the examples the `doc/*.txt` entry will search in
 `templates/doc/template.txt` in your runtime files.
+
+							     *TemplarRegister*
+If you want do to this from vimscript you can also use the `TemplarRegister`
+command.
+
+    :TemplarRegister {regex}	Registers a new template.
+
+Which would turn the lua code above in this >
+
+    TemplarRegister *.h
+    TemplarRegister *.vim
+    TemplarRegister doc/*.txt
 
 ============================================================================
 2. Writing template files
