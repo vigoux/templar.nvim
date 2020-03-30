@@ -7,11 +7,12 @@ Quickstart
 ----------
 
 To start using Templar :
-    * Create a `templates` directory in `.config/nvim` directory.
-    * Fill your template with the desired informations (eventually with fields, see `:h templar-fields`)
-    * Register your template using `:TemplarRegister {regex}` (see `:h TemplarRegister`)
-    * Edit a new file matching previously given regex
-    * Templar fills everything in
+
+- Create a `templates` directory in `.config/nvim` directory.
+- Fill your template with the desired informations (eventually with fields, see `:h templar-fields`)
+- Register your template using `:TemplarRegister {regex}` (see `:h TemplarRegister`)
+- Edit a new file matching previously given regex
+- Templar fills everything in
 
 More informations
 -----------------
