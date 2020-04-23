@@ -75,7 +75,6 @@ local function search_template()
 end
 
 local function source()
-    print("Test")
 	local template_file = search_template()
 
 	if template_file then
@@ -88,7 +87,7 @@ local function register(filename)
     -- Generate template path from filename
     -- This is basically replacing each * in the filename by template
     local temppath = 'templates/' .. string.gsub(filename, "%*", "template")
-    local fname_regex = string.gsub(filename, "%*", ".*")
+    local fname_regex = string.gsub(filename, "%*", ".*") .. "$"
     templates[fname_regex] = temppath
 end
 
