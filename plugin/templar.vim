@@ -12,4 +12,4 @@ augroup Templar
 augroup END
 
 
-command! -nargs=1 TemplarRegister lua require'templar'.register(<f-args>)
+command! -nargs=+ TemplarRegister lua require'templar'.register(<f-args>)
