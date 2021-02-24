@@ -90,10 +90,12 @@ local function source()
 end
 
 -- registers a new file extension to use the template with
-local function register(filename)
-    -- Generate template path from filename
+local function register(filename, alias)
+    -- Generate template path from filename or alias
     -- This is basically replacing each * in the filename by template
-    local temppath = 'templates/' .. string.gsub(filename, "%*", "template")
+    -- If alias is provided it is appended with extension from filename
+    local fileroot = alias or string.gsub(vim.fn.fnamemodify(filename,':r'), "%*", "template")
+    local temppath = 'templates/' .. fileroot .. '.' .. vim.fn.fnamemodify(filename, ':e')
     local fname_regex = string.gsub(filename, "%*", ".*") .. "$"
     templates[fname_regex] = temppath
 end
