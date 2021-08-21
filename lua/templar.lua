@@ -4,6 +4,7 @@ local api = vim.api
 local templates = {}
 
 local function parse_field(field, values)
+	local value
 	if string.match(field, '^%d+$') then
 		value = values[tonumber(field)]
 	else
@@ -32,8 +33,8 @@ local function parse_template(file)
 	local values = {}
 
 	for index, line in ipairs(lines) do
-		tag = vim.fn.matchstr(line, '%{\\zs.\\+\\ze}')
-		
+		local tag = vim.fn.matchstr(line, '%{\\zs.\\+\\ze}')
+
 		if not tag or tag:len() == 0 then
 			evaluated[index] = line
 		elseif tag == 'CURSOR' then
@@ -42,11 +43,11 @@ local function parse_template(file)
 		elseif tag:match('INCLUDE %g+') then
 			-- Special INCLUDE tag
 			-- Includes the content of a templte into current
-			fname = vim.fn.matchstr(tag, 'INCLUDE \\zs\\f*\\ze')
-			path = vim.fn.fnamemodify(filename, ':p:h') .. '/' .. fname
+			local fname = vim.fn.matchstr(tag, 'INCLUDE \\zs\\f*\\ze')
+			local path = vim.fn.fnamemodify(filename, ':p:h') .. '/' .. fname
 			debug_print(path)
 
-			_, output = parse_template(path)
+			local _, output = parse_template(path)
 
 			debug_print(vim.inspect(evaluated))
 			vim.list_extend(evaluated, output)
@@ -60,7 +61,7 @@ local function parse_template(file)
 end
 
 local function use_template(file)
-	cursor, lines = parse_template(file)
+	local cursor, lines = parse_template(file)
 	api.nvim_buf_set_lines(0, 0, -1, false, lines)
 	api.nvim_win_set_cursor(0, cursor)
 end
