@@ -14,6 +14,12 @@ local function parse_field(field, values)
 	return value
 end
 
+local function debug_print(...)
+  if vim.g.templar_debug_print == 1 then
+    print(...)
+  end
+end
+
 local function parse_template(file)
 	-- Get content of the template
 	local filename = vim.fn.expand(file)
@@ -38,13 +44,13 @@ local function parse_template(file)
 			-- Includes the content of a templte into current
 			fname = vim.fn.matchstr(tag, 'INCLUDE \\zs\\f*\\ze')
 			path = vim.fn.fnamemodify(filename, ':p:h') .. '/' .. fname
-			print(path)
+			debug_print(path)
 
 			_, output = parse_template(path)
 
-			print(vim.inspect(evaluated))
+			debug_print(vim.inspect(evaluated))
 			vim.list_extend(evaluated, output)
-			print(vim.inspect(evaluated))
+			debug_print(vim.inspect(evaluated))
 		else
 			evaluated[index] = line:gsub('%%{.+}', parse_field(tag, values))
 		end
@@ -64,7 +70,7 @@ local function search_template()
 	local curfile = vim.fn.expand('%:p')
 
     for fname, temppath in pairs(templates) do
-        print(fname, temppath)
+        debug_print(fname, temppath)
         if curfile:find(fname) ~= nil then
             local files = api.nvim_get_runtime_file(temppath, false)
             return files[1]
