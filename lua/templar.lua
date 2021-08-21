@@ -31,7 +31,7 @@ local function parse_template(file)
 		if not tag or tag:len() == 0 then
 			evaluated[index] = line
 		elseif tag == 'CURSOR' then
-			future_cursor = {actual_cursor[1] + index - 1, 0}
+			future_cursor = {actual_cursor[1] + index - 1, line:find("CURSOR") - 3}
 			evaluated[index] = line:gsub('%%{.+}', '')
 		elseif tag:match('INCLUDE %g+') then
 			-- Special INCLUDE tag
