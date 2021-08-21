@@ -4,6 +4,7 @@ local api = vim.api
 local templates = {}
 
 local function parse_field(field, values)
+	local value
 	if string.match(field, '^%d+$') then
 		value = values[tonumber(field)]
 	else
@@ -12,6 +13,12 @@ local function parse_field(field, values)
 	end
 
 	return value
+end
+
+local function debug_print(...)
+  if vim.g.templar_debug_print == 1 then
+    print(...)
+  end
 end
 
 local function parse_template(file)
@@ -26,25 +33,25 @@ local function parse_template(file)
 	local values = {}
 
 	for index, line in ipairs(lines) do
-		tag = vim.fn.matchstr(line, '%{\\zs.\\+\\ze}')
-		
+		local tag = vim.fn.matchstr(line, '%{\\zs.\\+\\ze}')
+
 		if not tag or tag:len() == 0 then
 			evaluated[index] = line
 		elseif tag == 'CURSOR' then
-			future_cursor = {actual_cursor[1] + index - 1, 0}
+			future_cursor = {actual_cursor[1] + index - 1, line:find("CURSOR") - 3}
 			evaluated[index] = line:gsub('%%{.+}', '')
 		elseif tag:match('INCLUDE %g+') then
 			-- Special INCLUDE tag
 			-- Includes the content of a templte into current
-			fname = vim.fn.matchstr(tag, 'INCLUDE \\zs\\f*\\ze')
-			path = vim.fn.fnamemodify(filename, ':p:h') .. '/' .. fname
-			print(path)
+			local fname = vim.fn.matchstr(tag, 'INCLUDE \\zs\\f*\\ze')
+			local path = vim.fn.fnamemodify(filename, ':p:h') .. '/' .. fname
+			debug_print(path)
 
-			_, output = parse_template(path)
+			local _, output = parse_template(path)
 
-			print(vim.inspect(evaluated))
+			debug_print(vim.inspect(evaluated))
 			vim.list_extend(evaluated, output)
-			print(vim.inspect(evaluated))
+			debug_print(vim.inspect(evaluated))
 		else
 			evaluated[index] = line:gsub('%%{.+}', parse_field(tag, values))
 		end
@@ -54,17 +61,17 @@ local function parse_template(file)
 end
 
 local function use_template(file)
-	cursor, lines = parse_template(file)
+	local cursor, lines = parse_template(file)
 	api.nvim_buf_set_lines(0, 0, -1, false, lines)
 	api.nvim_win_set_cursor(0, cursor)
 end
 
 -- searches the correct template for the current file
 local function search_template()
-	local curfile = vim.fn.expand('%')
+	local curfile = vim.fn.expand('%:p')
 
     for fname, temppath in pairs(templates) do
-        print(fname, temppath)
+        debug_print(fname, temppath)
         if curfile:find(fname) ~= nil then
             local files = api.nvim_get_runtime_file(temppath, false)
             return files[1]
