@@ -61,7 +61,7 @@ end
 
 -- searches the correct template for the current file
 local function search_template()
-	local curfile = vim.fn.expand('%')
+	local curfile = vim.fn.expand('%:p')
 
     for fname, temppath in pairs(templates) do
         print(fname, temppath)
